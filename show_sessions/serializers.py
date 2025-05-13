@@ -2,6 +2,7 @@ from rest_framework import serializers
 from show_sessions.models import ShowSession
 from shows.models import AstronomyShow
 from domes.models import PlanetariumDome
+from tickets.models import Ticket
 
 
 class ShowSessionSerializer(serializers.ModelSerializer):
@@ -28,3 +29,11 @@ class ShowSessionSerializer(serializers.ModelSerializer):
             "planetarium_dome_id",
             "show_time",
         ]
+
+
+class SeatSerializer(serializers.Serializer):
+    row = serializers.IntegerField(min_value=1)
+    seat = serializers.IntegerField(min_value=1)
+
+    class Meta:
+        fields = ["row", "seat"]

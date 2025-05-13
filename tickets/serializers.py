@@ -11,11 +11,8 @@ class TicketSerializer(serializers.ModelSerializer):
         source="show_session",
         write_only=True,
     )
-    reservation = serializers.StringRelatedField(read_only=True)
-    reservation_id = serializers.PrimaryKeyRelatedField(
-        queryset=Reservation.objects.all(),
-        source="reservation",
-        write_only=True,
+    reservation = serializers.PrimaryKeyRelatedField(
+        queryset=Reservation.objects.all()
     )
 
     class Meta:
@@ -27,7 +24,6 @@ class TicketSerializer(serializers.ModelSerializer):
             "show_session",
             "show_session_id",
             "reservation",
-            "reservation_id",
         ]
 
     def validate(self, data):

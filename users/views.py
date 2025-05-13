@@ -14,15 +14,37 @@ class IsSelfOrAdmin(permissions.BasePermission):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated, IsSelfOrAdmin]
 
     def get_queryset(self):
-        user = self.request.user
-        if user.is_staff:
-            return User.objects.all()
-        return User.objects.filter(id=user.id)
+        # Адміністратори бачать усіх користувачів.
+        # Для інших дій, таких як retrieve, update, destroy,
+        # дозвіл IsSelfOrAdmin буде контролювати доступ на рівні об'єкта.
+        # Тому базовий queryset може бути User.objects.all(),
+        # а IsSelfOrAdmin відфільтрує, якщо не адмін і не власник.
+        return User.objects.all()
 
-    @action(detail=False, methods=["get", "put", "patch"], url_path="me")
+    def get_permissions(self):
+        if self.action == "create":
+            permission_classes = [permissions.IsAdminUser]
+        elif self.action == "list":
+            permission_classes = [permissions.IsAdminUser]
+        elif self.action == "retrieve":
+            permission_classes = [permissions.IsAuthenticated, IsSelfOrAdmin]
+        elif self.action in ["update", "partial_update", "destroy"]:
+            permission_classes = [permissions.IsAuthenticated, IsSelfOrAdmin]
+        elif self.action == "me":
+            permission_classes = [permissions.IsAuthenticated]
+        elif self.action == "register":
+            permission_classes = [permissions.AllowAny]
+        else:
+            permission_classes = [permissions.IsAuthenticated]
+        return [permission() for permission in permission_classes]
+
+    @action(
+        detail=False,
+        methods=["get", "put", "patch"],
+        url_path="me",
+    )
     def me(self, request):
         user = request.user
         if request.method in ["PUT", "PATCH"]:
@@ -38,7 +60,6 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(
         detail=False,
         methods=["post"],
-        permission_classes=[permissions.AllowAny],
         url_path="register",
     )
     def register(self, request):

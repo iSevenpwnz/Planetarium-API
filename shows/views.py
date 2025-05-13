@@ -9,7 +9,15 @@ from django.db.models import Prefetch
 class ShowThemeViewSet(viewsets.ModelViewSet):
     queryset = ShowTheme.objects.all()
     serializer_class = ShowThemeSerializer
-    permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
+    ordering_fields = ["name", "id"]
+    ordering = ["name"]
+
+    def get_permissions(self):
+        if self.action in ["list", "retrieve"]:
+            permission_classes = [permissions.AllowAny]
+        else:
+            permission_classes = [permissions.IsAdminUser]
+        return [permission() for permission in permission_classes]
 
 
 class AstronomyShowViewSet(viewsets.ModelViewSet):
@@ -17,15 +25,24 @@ class AstronomyShowViewSet(viewsets.ModelViewSet):
         Prefetch("themes", queryset=ShowTheme.objects.all())
     )
     serializer_class = AstronomyShowSerializer
-    permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
     filterset_fields = ["themes"]
     search_fields = ["title", "description"]
+    ordering_fields = ["title", "id"]
+    ordering = ["title"]
+
+    def get_permissions(self):
+        if self.action in ["list", "retrieve"]:
+            permission_classes = [permissions.AllowAny]
+        elif self.action == "upload_image":
+            permission_classes = [permissions.IsAdminUser]
+        else:
+            permission_classes = [permissions.IsAdminUser]
+        return [permission() for permission in permission_classes]
 
     @action(
         detail=True,
         methods=["post"],
         url_path="upload-image",
-        permission_classes=[permissions.IsAdminUser],
     )
     def upload_image(self, request, pk=None):
         show = self.get_object()
