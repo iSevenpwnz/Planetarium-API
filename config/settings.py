@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 from datetime import timedelta
 
@@ -21,14 +22,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = (
-    "django-insecure-l&pfu1am_o55cq%rbcyui)a0j!c9#19g2o8ar7h*8j$y)wi@(r"
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY",
+    "django-insecure-l&pfu1am_o55cq%rbcyui)a0j!c9#19g2o8ar7h*8j$y)wi@(r",
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "True").lower() in ("true", "1", "t")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(
+    ","
+)
 
 
 # Application definition

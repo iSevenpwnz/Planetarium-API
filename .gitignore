@@ -1,1 +1,47 @@
 prd.txt
+
+# Віртуальне середовище
+venv/
+env/
+ENV/
+
+# База даних
+*.sqlite3
+db.sqlite3
+
+# Розширення Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+
+# Змінні середовища
+.env
+.env.*
+
+# Медіа та статичні файли
+media/
+static/
+staticfiles/
+
+# Локальні налаштування
+local_settings.py
+
+# Логи
+*.log
+
+# Тести
+.coverage
+htmlcov/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Докер
+docker-compose.yml
