@@ -1,7 +1,6 @@
 from django.db import models
 from shows.models import AstronomyShow
 from domes.models import PlanetariumDome
-from bookings.models import Reservation
 
 
 class ShowSession(models.Model):
@@ -14,4 +13,7 @@ class ShowSession(models.Model):
     show_time = models.DateTimeField()
 
     def __str__(self):
-        return f"{self.astronomy_show.title} @ {self.planetarium_dome.name} ({self.show_time})"
+        return (
+            f"{self.astronomy_show.title} @ "
+            f"{self.planetarium_dome.name} ({self.show_time})"
+        )

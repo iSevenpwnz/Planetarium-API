@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -8,7 +7,7 @@ from tickets.models import Ticket
 from bookings.models import Reservation
 from bookings.serializers import ReservationSerializer
 from tickets.serializers import TicketSerializer
-from django.db import transaction, IntegrityError
+from django.db import transaction
 from django.db.models import Prefetch
 from rest_framework.exceptions import ValidationError
 
@@ -85,17 +84,20 @@ class ShowSessionViewSet(viewsets.ModelViewSet):
 
             if not (1 <= row <= dome.rows and 1 <= seat <= dome.seats_in_row):
                 raise ValidationError(
-                    f'Місце (ряд {row}, місце {seat}) не існує в куполі "{dome.name}".'
+                    f"Місце (ряд {row}, місце {seat}) не існує в куполі "
+                    f'"{dome.name}".'
                 )
 
             if (row, seat) in existing_tickets:
                 raise ValidationError(
-                    f"Місце (ряд {row}, місце {seat}) вже заброньоване на цю сесію."
+                    f"Місце (ряд {row}, місце {seat}) вже заброньоване "
+                    f"на цю сесію."
                 )
 
             if (row, seat) in [(s["row"], s["seat"]) for s in seats_to_book]:
                 raise ValidationError(
-                    f"Місце (ряд {row}, місце {seat}) вказане кілька разів у запиті."
+                    f"Місце (ряд {row}, місце {seat}) вказане кілька разів "
+                    f"у запиті."
                 )
 
             seats_to_book.append(seat_data)

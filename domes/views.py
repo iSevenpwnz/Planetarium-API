@@ -5,7 +5,6 @@ from domes.models import PlanetariumDome
 from domes.serializers import PlanetariumDomeSerializer
 from show_sessions.models import ShowSession
 from show_sessions.serializers import ShowSessionSerializer
-from django.db.models import Count
 
 
 class PlanetariumDomeViewSet(viewsets.ModelViewSet):
@@ -18,7 +17,8 @@ class PlanetariumDomeViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         """
-        Instantiates and returns the list of permissions that this view requires.
+        Instantiates and returns the list
+        of permissions that this view requires.
         """
         if self.action in ["list", "retrieve", "capacity", "sessions"]:
             permission_classes = [permissions.AllowAny]

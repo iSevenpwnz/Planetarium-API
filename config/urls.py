@@ -10,6 +10,14 @@ from rest_framework_simplejwt.views import (
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
+from rest_framework.routers import DefaultRouter
+
+from shows.views import AstronomyShowViewSet, ShowThemeViewSet
+from domes.views import PlanetariumDomeViewSet
+from show_sessions.views import ShowSessionViewSet
+from bookings.views import ReservationViewSet
+from tickets.views import TicketViewSet
+from users.views import UserViewSet
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -20,6 +28,15 @@ schema_view = get_schema_view(
     public=True,
     permission_classes=(permissions.AllowAny,),
 )
+
+router = DefaultRouter()
+router.register(r"astronomy-shows", AstronomyShowViewSet)
+router.register(r"show-themes", ShowThemeViewSet)
+router.register(r"planetarium-domes", PlanetariumDomeViewSet)
+router.register(r"show-sessions", ShowSessionViewSet)
+router.register(r"reservations", ReservationViewSet)
+router.register(r"tickets", TicketViewSet)
+router.register(r"users", UserViewSet)
 
 urlpatterns = [
     path("", HomeView.as_view(), name="home"),
@@ -40,10 +57,11 @@ urlpatterns = [
         schema_view.with_ui("redoc", cache_timeout=0),
         name="schema-redoc",
     ),
-    path("api/", include("shows.urls")),
-    path("api/", include("domes.urls")),
-    path("api/", include("show_sessions.urls")),
-    path("api/", include("bookings.urls")),
-    path("api/", include("tickets.urls")),
-    path("api/", include("users.urls")),
+    path("api/", include(router.urls)),
 ]
+
+
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+    )

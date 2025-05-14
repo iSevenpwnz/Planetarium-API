@@ -2,7 +2,6 @@ from rest_framework import serializers
 from show_sessions.models import ShowSession
 from shows.models import AstronomyShow
 from domes.models import PlanetariumDome
-from tickets.models import Ticket
 
 
 class ShowSessionSerializer(serializers.ModelSerializer):
