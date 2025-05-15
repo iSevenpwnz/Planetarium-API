@@ -11,12 +11,21 @@ db.sqlite3
 
 # Розширення Python
 __pycache__/
+__pycache__
 *.py[cod]
 *$py.class
 *.so
 .Python
 *.egg-info/
 *.egg
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+*.pywz
+*.pywz
+
 
 # Змінні середовища
 .env
