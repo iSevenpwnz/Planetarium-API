@@ -45,8 +45,9 @@ def test_user_list_permissions():
     client.force_authenticate(user=user)
     url = reverse("user-list")
     response = client.get(url)
-    assert len(response.data["results"]) == 1
-    assert response.data["results"][0]["email"] == "userlist@test.com"
+    assert response.status_code == 403
+
+    # Test admin can list users (optional, but good practice)
     client.force_authenticate(user=admin)
     response = client.get(url)
     assert len(response.data["results"]) >= 2

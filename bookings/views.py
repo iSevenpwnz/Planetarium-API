@@ -13,6 +13,8 @@ class ReservationViewSet(viewsets.ModelViewSet):
     serializer_class = ReservationSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrAdmin]
     filterset_fields = ["user", "created_at"]
+    ordering_fields = ["created_at", "user"]
+    ordering = ["-created_at"]
 
     def get_queryset(self):
         user = self.request.user

@@ -14,6 +14,8 @@ class IsSelfOrAdmin(permissions.BasePermission):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    ordering_fields = ["email", "first_name", "last_name", "id"]
+    ordering = ["id"]
 
     def get_queryset(self):
         # Адміністратори бачать усіх користувачів.

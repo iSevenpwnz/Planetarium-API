@@ -8,7 +8,7 @@ class IsOwnerOrAdmin(permissions.BasePermission):
         return request.user.is_staff or obj.reservation.user == request.user
 
 
-class TicketViewSet(viewsets.ReadOnlyModelViewSet):
+class TicketViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.select_related("show_session", "reservation")
     serializer_class = TicketSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrAdmin]

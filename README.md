@@ -1,132 +1,235 @@
-# Planetarium Booking API
+# Planetarium API
 
-REST API для системи онлайн-бронювання квитків на астрономічні шоу у планетарії. Система дозволяє адмініструвати шоу, куполи, сесії, теми шоу, бронювання, квитки та користувачів. Зареєстровані користувачі можуть переглядати розклад, бронювати місця та переглядати свою історію бронювань.
+A Django REST Framework API for an online planetarium ticket booking system.
 
-## ✨ Основні функції
+## Table of Contents
 
-- CRUD операції для всіх моделей: AstronomyShow, ShowTheme, PlanetariumDome, ShowSession, Ticket, Reservation
-- Реєстрація, автентифікація (JWT) та авторизація користувачів (email як логін)
-- Кастомний профіль користувача (`/api/users/me/`)
-- Перегляд розкладу шоу з можливістю фільтрації та пошуку (за темами, куполами, датами, назвою)
-- Бронювання квитків з вибором конкретних місць та валідацією зайнятих місць
-- Перегляд історії бронювань та квитків користувача (тільки своїх)
-- Адміністративний доступ для повного керування даними
-- Кастомні endpoints: доступні місця, місткість куполу, сесії куполу, завантаження зображень до шоу
-- Автоматична документація API (Swagger/Redoc)
-- Оптимізовані запити до БД (`select_related`/`prefetch_related`)
-- Покриття тестами основних сценаріїв (pytest)
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Project Structure](#project-structure)
+- [Setup and Installation](#setup-and-installation)
+  - [Prerequisites](#prerequisites)
+  - [Running with Docker](#running-with-docker)
+  - [Manual Setup (Optional)](#manual-setup-optional)
+- [API Endpoints](#api-endpoints)
+- [API Documentation](#api-documentation)
+- [Running Tests](#running-tests)
 
-## 🛠️ Технології та стек
+## Features
 
-- **Backend:** Python, Django, Django REST Framework
-- **База даних:** SQLite (для розробки), PostgreSQL (рекомендовано для production)
-- **Автентифікація:** djangorestframework-simplejwt (JWT)
-- **Фільтрація:** django-filter
-- **Документація API:** drf-yasg (Swagger/Redoc)
-- **Тестування:** pytest, pytest-django
-- **Форматування коду:** black, isort, flake8
+- User registration and JWT-based authentication.
+- Management of:
+  - Astronomy Shows and Show Themes
+  - Planetarium Domes
+  - Show Sessions
+  - Reservations (Bookings)
+  - Tickets
+  - Users
+- API documentation using Swagger and ReDoc.
+- Dockerized for easy deployment and development.
+- Initial data loading for quick setup.
 
-## 🚀 Налаштування та запуск
+## Technologies Used
 
-### Передумови
+- **Backend:** Python 3.12, Django 4.2, Django REST Framework
+- **Database:** PostgreSQL (configured for Docker), SQLite (for local development if not using Docker)
+- **Authentication:** JSON Web Tokens (JWT) via `djangorestframework-simplejwt`
+- **API Documentation:** `drf-yasg` (Swagger/OpenAPI, ReDoc)
+- **Containerization:** Docker, Docker Compose
+- **Linters & Formatters:** `black`, `flake8`, `isort`
+- **Testing:** `pytest`, `pytest-django`
+- **Other Key Libraries:** `django-filter`, `psycopg2-binary`
 
-- Python 3.10+
-- pip
+## Project Structure
 
-### Інсталяція
+The project follows a standard Django app structure:
 
-1.  **Клонуйте репозиторій:**
+```
+Planetarium-api/
+├── bookings/           # Handles reservations/bookings
+├── config/             # Project-wide settings and main URL configuration
+├── domes/              # Manages planetarium domes
+├── show_sessions/      # Manages show sessions
+├── shows/              # Manages astronomy shows and themes
+├── templates/          # HTML templates (e.g., for the home page)
+├── tests/              # Contains automated tests
+├── tickets/            # Manages tickets
+├── users/              # Custom user model and user-related endpoints
+├── venv/               # Virtual environment (if used locally)
+├── .dockerignore
+├── .env                # Environment variables (local, gitignored)
+├── .env.example        # Example environment variables
+├── .gitignore
+├── db.sqlite3          # Default SQLite database (if not using PostgreSQL)
+├── docker-compose.yml  # Docker Compose configuration
+├── Dockerfile          # Docker image build instructions
+├── initial_data.json   # Initial data for the database
+├── manage.py           # Django's command-line utility
+├── README.md
+└── requirements.txt    # Python dependencies
+```
+
+## Setup and Installation
+
+### Prerequisites
+
+- Docker and Docker Compose installed.
+- Git (for cloning the repository).
+
+### Running with Docker (Recommended)
+
+1.  **Clone the repository:**
 
     ```bash
-    git clone <your-repository-url>
+    git clone <repository_url>
     cd Planetarium-api
     ```
 
-2.  **Створіть та активуйте віртуальне середовище:**
+2.  **Create environment file:**
+    Copy the example environment file and customize it if needed (e.g., for `SECRET_KEY` in production). For development, the defaults in `.env.example` and `docker-compose.yml` should work.
 
     ```bash
-    # Windows
-    python -m venv venv
-    .\venv\Scripts\activate
+    cp .env.example .env
+    ```
 
-    # macOS/Linux
-    python3 -m venv venv
+3.  **Build and run the services:**
+
+    ```bash
+    docker-compose up --build
+    ```
+
+    This command will:
+
+    - Build the Docker image for the `web` service (Django application).
+    - Start the `web` service and the `db` service (PostgreSQL).
+    - Apply database migrations.
+    - Load initial data from `initial_data.json`.
+    - Start the Django development server on `http://localhost:8000`.
+
+4.  **Access the application:**
+
+    - API: `http://localhost:8000/api/`
+    - Admin Panel: `http://localhost:8000/admin/` (you'll need to create a superuser first, see below)
+    - API Docs (Swagger): `http://localhost:8000/api/docs/`
+    - API Docs (ReDoc): `http://localhost:8000/api/redoc/`
+
+5.  **Create a superuser (optional, for admin panel access):**
+    Open another terminal and run:
+
+    ```bash
+    docker-compose exec web python manage.py createsuperuser
+    ```
+
+    Follow the prompts to create an admin user.
+
+6.  **Stopping the application:**
+    Press `Ctrl+C` in the terminal where `docker-compose up` is running, then:
+    ```bash
+    docker-compose down
+    ```
+    To remove volumes (and lose PostgreSQL data):
+    ```bash
+    docker-compose down -v
+    ```
+
+### Manual Setup (Optional)
+
+This setup is for development without Docker.
+
+1.  **Clone the repository:**
+
+    ```bash
+    git clone <repository_url>
+    cd Planetarium-api
+    ```
+
+2.  **Create and activate a virtual environment:**
+
+    ```bash
+    python -m venv venv
+    # On Windows
+    venv\Scripts\activate
+    # On macOS/Linux
     source venv/bin/activate
     ```
 
-3.  **Встановіть залежності:**
+3.  **Install dependencies:**
 
     ```bash
     pip install -r requirements.txt
     ```
 
-4.  **Застосуйте міграції:**
+4.  **Create environment file:**
+    Copy `.env.example` to `.env` and configure it. You might need to adjust `DATABASES` settings in `config/settings.py` if you are not using the default PostgreSQL connection from `docker-compose.yml` (e.g., to use `db.sqlite3`).
+
+5.  **Apply migrations:**
 
     ```bash
     python manage.py migrate
     ```
 
-5.  **Створіть суперкористувача (для доступу до адмінки та повних прав):**
+6.  **Load initial data (optional):**
+
+    ```bash
+    python manage.py loaddata initial_data.json
+    ```
+
+7.  **Create a superuser (optional):**
 
     ```bash
     python manage.py createsuperuser
     ```
 
-6.  **Запустіть сервер розробки:**
+8.  **Run the development server:**
     ```bash
     python manage.py runserver
     ```
-    API буде доступне за адресою `http://127.0.0.1:8000/api/`.
+    The application will be available at `http://127.0.0.1:8000/`.
 
-## ✅ Запуск тестів
+## API Endpoints
 
-Для запуску тестів виконайте команду в корені проекту (з активованим віртуальним середовищем):
+The API provides endpoints for managing various resources of the planetarium system. Key base URLs for registered ViewSets:
 
-```bash
-pytest --ds=config.settings -v
-```
+- `/api/astronomy-shows/`
+- `/api/show-themes/`
+- `/api/planetarium-domes/`
+- `/api/show-sessions/`
+- `/api/reservations/`
+- `/api/tickets/`
+- `/api/users/`
 
-## 📚 Документація API
+Authentication endpoints:
 
-Після запуску сервера, документація API доступна за адресами:
+- `/api/token/` (POST): Obtain JWT access and refresh tokens.
+- `/api/token/refresh/` (POST): Refresh JWT access token.
 
-- **Swagger UI:** `http://127.0.0.1:8000/api/docs/`
-- **ReDoc:** `http://127.0.0.1:8000/api/redoc/`
+For detailed information on all available endpoints, request/response formats, and parameters, please refer to the API documentation.
 
-## 🔗 Основні ендпоінти
+## API Documentation
 
-### Аутентифікація і користувачі
+Interactive API documentation is available through:
 
-- `POST /api/users/register/` - Реєстрація
-- `POST /api/users/token/` - Отримання JWT токена (логін)
-- `POST /api/users/token/refresh/` - Оновлення JWT токена
-- `GET/PUT/PATCH /api/users/me/` - Профіль поточного користувача
-- `GET /api/users/` - Список користувачів (тільки для адміна)
+- **Swagger UI:** `http://localhost:8000/api/docs/`
+- **ReDoc:** `http://localhost:8000/api/redoc/`
 
-### Шоу та теми
+These interfaces allow you to explore and interact with the API endpoints in real-time.
 
-- `GET/POST /api/astronomy-shows/` - Список/Створення шоу
-- `GET/PUT/PATCH/DELETE /api/astronomy-shows/{id}/` - Деталі/Оновлення/Видалення шоу
-- `POST /api/astronomy-shows/{id}/upload-image/` - Завантаження зображення (тільки адмін)
-- `GET/POST /api/show-themes/` - Список/Створення тем
-- `GET/PUT/PATCH/DELETE /api/show-themes/{id}/` - Деталі/Оновлення/Видалення теми
+## Running Tests
 
-### Куполи
+To run the test suite:
 
-- `GET/POST /api/planetarium-domes/` - Список/Створення куполів
-- `GET/PUT/PATCH/DELETE /api/planetarium-domes/{id}/` - Деталі/Оновлення/Видалення куполу
-- `GET /api/planetarium-domes/{id}/sessions/` - Список сесій для куполу
-- `GET /api/planetarium-domes/{id}/capacity/` - Місткість куполу
+1.  **If using Docker:**
+    Ensure your containers are running (`docker-compose up`). Then, in a new terminal:
 
-### Сесії шоу
+    ```bash
+    docker-compose exec web pytest
+    ```
 
-- `GET/POST /api/show-sessions/` - Список/Створення сесій
-- `GET/PUT/PATCH/DELETE /api/show-sessions/{id}/` - Деталі/Оновлення/Видалення сесії
-- `GET /api/show-sessions/{id}/available-seats/` - Список доступних місць
+2.  **If running manually (with virtual environment activated):**
+    ```bash
+    pytest
+    ```
 
-### Бронювання та квитки
+This will execute all tests defined in the `tests/` directory and within individual app directories.
 
-- `GET/POST /api/reservations/` - Список/Створення бронювань (користувач бачить тільки свої)
-- `GET /api/reservations/{id}/` - Деталі бронювання (тільки власник або адмін)
-- `GET /api/tickets/` - Список квитків (користувач бачить тільки свої)
-- `GET /api/tickets/{id}/` - Деталі квитка (тільки власник або адмін)
+https://prnt.sc/KKHEcBDiPVLO

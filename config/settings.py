@@ -55,7 +55,6 @@ INSTALLED_APPS = [
     "show_sessions",
     "tickets",
     "bookings",
-    "topics",
     "users",
 ]
 
@@ -189,3 +188,6 @@ SIMPLE_JWT = {
     "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
     "JTI_CLAIM": "jti",
 }
+
+# DRF-YASG settings
+SWAGGER_USE_COMPAT_RENDERERS = False
