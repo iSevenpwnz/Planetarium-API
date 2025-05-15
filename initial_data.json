@@ -1,0 +1,301 @@
+[
+  {
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$720000$abcdef123456$ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+      "last_login": null,
+      "is_superuser": true,
+      "email": "admin@example.com",
+      "first_name": "Admin",
+      "last_name": "User",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2024-05-12T12:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$720000$abcdef123456$ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+      "last_login": null,
+      "is_superuser": false,
+      "email": "user@example.com",
+      "first_name": "Regular",
+      "last_name": "User",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2024-05-12T12:05:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "shows.showtheme",
+    "pk": 1,
+    "fields": {
+      "name": "Галактики"
+    }
+  },
+  {
+    "model": "shows.showtheme",
+    "pk": 2,
+    "fields": {
+      "name": "Сонячна система"
+    }
+  },
+  {
+    "model": "shows.showtheme",
+    "pk": 3,
+    "fields": {
+      "name": "Чорні діри"
+    }
+  },
+  {
+    "model": "shows.astronomyshow",
+    "pk": 1,
+    "fields": {
+      "title": "Подорож до Андромеди",
+      "description": "Візуальна екскурсія до найближчої спіральної галактики.",
+      "image": null,
+      "themes": [1]
+    }
+  },
+  {
+    "model": "shows.astronomyshow",
+    "pk": 2,
+    "fields": {
+      "title": "Таємниці Марса",
+      "description": "Дослідження червоної планети: історія та майбутні місії.",
+      "image": null,
+      "themes": [2]
+    }
+  },
+  {
+    "model": "shows.astronomyshow",
+    "pk": 3,
+    "fields": {
+      "title": "Гравітаційні монстри",
+      "description": "Все про чорні діри: від теорії до спостережень.",
+      "image": null,
+      "themes": [3]
+    }
+  },
+  {
+    "model": "shows.astronomyshow",
+    "pk": 4,
+    "fields": {
+      "title": "Космічні сусіди",
+      "description": "Огляд планет Сонячної системи та їх супутників.",
+      "image": null,
+      "themes": [2]
+    }
+  },
+  {
+    "model": "domes.planetariumdome",
+    "pk": 1,
+    "fields": {
+      "name": "Великий купол",
+      "rows": 10,
+      "seats_in_row": 15
+    }
+  },
+  {
+    "model": "domes.planetariumdome",
+    "pk": 2,
+    "fields": {
+      "name": "Малий купол",
+      "rows": 6,
+      "seats_in_row": 10
+    }
+  },
+  {
+    "model": "show_sessions.showsession",
+    "pk": 1,
+    "fields": {
+      "astronomy_show": 1,
+      "planetarium_dome": 1,
+      "show_time": "2024-06-15T18:00:00Z"
+    }
+  },
+  {
+    "model": "show_sessions.showsession",
+    "pk": 2,
+    "fields": {
+      "astronomy_show": 2,
+      "planetarium_dome": 2,
+      "show_time": "2024-06-15T19:00:00Z"
+    }
+  },
+  {
+    "model": "show_sessions.showsession",
+    "pk": 3,
+    "fields": {
+      "astronomy_show": 1,
+      "planetarium_dome": 1,
+      "show_time": "2024-06-15T20:00:00Z"
+    }
+  },
+  {
+    "model": "show_sessions.showsession",
+    "pk": 4,
+    "fields": {
+      "astronomy_show": 3,
+      "planetarium_dome": 1,
+      "show_time": "2024-06-16T18:00:00Z"
+    }
+  },
+  {
+    "model": "show_sessions.showsession",
+    "pk": 5,
+    "fields": {
+      "astronomy_show": 4,
+      "planetarium_dome": 2,
+      "show_time": "2024-06-16T19:00:00Z"
+    }
+  },
+  {
+    "model": "show_sessions.showsession",
+    "pk": 6,
+    "fields": {
+      "astronomy_show": 3,
+      "planetarium_dome": 1,
+      "show_time": "2024-06-16T20:00:00Z"
+    }
+  },
+  {
+    "model": "bookings.reservation",
+    "pk": 1,
+    "fields": {
+      "created_at": "2024-05-13T10:00:00Z",
+      "user": 2
+    }
+  },
+  {
+    "model": "bookings.reservation",
+    "pk": 2,
+    "fields": {
+      "created_at": "2024-05-13T11:00:00Z",
+      "user": 2
+    }
+  },
+  {
+    "model": "bookings.reservation",
+    "pk": 3,
+    "fields": {
+      "created_at": "2024-05-14T09:00:00Z",
+      "user": 1
+    }
+  },
+  {
+    "model": "bookings.reservation",
+    "pk": 4,
+    "fields": {
+      "created_at": "2024-05-14T10:00:00Z",
+      "user": 1
+    }
+  },
+  {
+    "model": "tickets.ticket",
+    "pk": 1,
+    "fields": {
+      "row": 5,
+      "seat": 8,
+      "show_session": 1,
+      "reservation": 1
+    }
+  },
+  {
+    "model": "tickets.ticket",
+    "pk": 2,
+    "fields": {
+      "row": 5,
+      "seat": 9,
+      "show_session": 1,
+      "reservation": 1
+    }
+  },
+  {
+    "model": "tickets.ticket",
+    "pk": 3,
+    "fields": {
+      "row": 3,
+      "seat": 5,
+      "show_session": 2,
+      "reservation": 2
+    }
+  },
+  {
+    "model": "tickets.ticket",
+    "pk": 4,
+    "fields": {
+      "row": 8,
+      "seat": 1,
+      "show_session": 3,
+      "reservation": 3
+    }
+  },
+  {
+    "model": "tickets.ticket",
+    "pk": 5,
+    "fields": {
+      "row": 8,
+      "seat": 2,
+      "show_session": 3,
+      "reservation": 3
+    }
+  },
+  {
+    "model": "tickets.ticket",
+    "pk": 6,
+    "fields": {
+      "row": 8,
+      "seat": 3,
+      "show_session": 3,
+      "reservation": 3
+    }
+  },
+  {
+    "model": "tickets.ticket",
+    "pk": 7,
+    "fields": {
+      "row": 1,
+      "seat": 1,
+      "show_session": 4,
+      "reservation": 4
+    }
+  },
+  {
+    "model": "tickets.ticket",
+    "pk": 8,
+    "fields": {
+      "row": 1,
+      "seat": 2,
+      "show_session": 4,
+      "reservation": 4
+    }
+  },
+  {
+    "model": "tickets.ticket",
+    "pk": 9,
+    "fields": {
+      "row": 4,
+      "seat": 7,
+      "show_session": 5,
+      "reservation": 1
+    }
+  },
+  {
+    "model": "tickets.ticket",
+    "pk": 10,
+    "fields": {
+      "row": 9,
+      "seat": 12,
+      "show_session": 6,
+      "reservation": 2
+    }
+  }
+]
