@@ -18,11 +18,6 @@ class UserViewSet(viewsets.ModelViewSet):
     ordering = ["id"]
 
     def get_queryset(self):
-        # Адміністратори бачать усіх користувачів.
-        # Для інших дій, таких як retrieve, update, destroy,
-        # дозвіл IsSelfOrAdmin буде контролювати доступ на рівні об'єкта.
-        # Тому базовий queryset може бути User.objects.all(),
-        # а IsSelfOrAdmin відфільтрує, якщо не адмін і не власник.
         return User.objects.all()
 
     def get_permissions(self):
