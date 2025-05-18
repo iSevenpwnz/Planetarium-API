@@ -231,6 +231,3 @@ To run the test suite:
     ```
 
 This will execute all tests defined in the `tests/` directory and within individual app directories.
-
-Diagrams
-https://prnt.sc/KKHEcBDiPVLO

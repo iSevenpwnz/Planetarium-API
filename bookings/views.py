@@ -1,11 +1,7 @@
 from rest_framework import viewsets, permissions
 from bookings.models import Reservation
 from bookings.serializers import ReservationSerializer
-
-
-class IsOwnerOrAdmin(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return request.user.is_staff or obj.user == request.user
+from bookings.permissions import IsOwnerOrAdmin
 
 
 class ReservationViewSet(viewsets.ModelViewSet):

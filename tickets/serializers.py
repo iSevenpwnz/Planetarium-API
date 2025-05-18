@@ -34,6 +34,6 @@ class TicketSerializer(serializers.ModelSerializer):
             show_session=show_session, row=row, seat=seat
         ).exists():
             raise serializers.ValidationError(
-                "Це місце вже зайняте для цієї сесії."
+                "This seat is already taken for this session."
             )
         return data

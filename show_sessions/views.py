@@ -10,6 +10,7 @@ from tickets.serializers import TicketSerializer
 from django.db import transaction
 from django.db.models import Prefetch
 from rest_framework.exceptions import ValidationError
+from show_sessions.permissions import ShowSessionPermissions
 
 
 class ShowSessionViewSet(viewsets.ModelViewSet):
@@ -26,13 +27,7 @@ class ShowSessionViewSet(viewsets.ModelViewSet):
     ordering = ["show_time", "id"]
 
     def get_permissions(self):
-        if self.action in ["list", "retrieve", "available_seats"]:
-            permission_classes = [permissions.AllowAny]
-        elif self.action == "book":
-            permission_classes = [permissions.IsAuthenticated]
-        else:
-            permission_classes = [permissions.IsAdminUser]
-        return [permission() for permission in permission_classes]
+        return ShowSessionPermissions.get_permissions(self.action)
 
     @action(detail=True, methods=["get"], url_path="available-seats")
     def available_seats(self, request, pk=None):
@@ -58,21 +53,21 @@ class ShowSessionViewSet(viewsets.ModelViewSet):
     )
     @transaction.atomic
     def book(self, request, pk=None):
-        """Бронює одне або кілька місць на цю сесію для поточного користувача."""
+        """Books one or more seats for this session for the current user."""
         show_session = self.get_object()
         dome = show_session.planetarium_dome
         user = request.user
         seats_data = request.data
 
         if not isinstance(seats_data, list):
-            raise ValidationError("Очікувався список місць.")
+            raise ValidationError("List of seats was expected.")
 
         seat_serializer = SeatSerializer(data=seats_data, many=True)
         seat_serializer.is_valid(raise_exception=True)
         validated_seats = seat_serializer.validated_data
 
         if not validated_seats:
-            raise ValidationError("Список місць не може бути порожнім.")
+            raise ValidationError("List of seats cannot be empty.")
 
         taken_seats_qs = Ticket.objects.filter(show_session=show_session)
         existing_tickets = set(taken_seats_qs.values_list("row", "seat"))
@@ -84,20 +79,20 @@ class ShowSessionViewSet(viewsets.ModelViewSet):
 
             if not (1 <= row <= dome.rows and 1 <= seat <= dome.seats_in_row):
                 raise ValidationError(
-                    f"Місце (ряд {row}, місце {seat}) не існує в куполі "
+                    f"Seat (row {row}, seat {seat}) does not exist in dome "
                     f'"{dome.name}".'
                 )
 
             if (row, seat) in existing_tickets:
                 raise ValidationError(
-                    f"Місце (ряд {row}, місце {seat}) вже заброньоване "
-                    f"на цю сесію."
+                    f"Seat (row {row}, seat {seat}) is already booked "
+                    f"for this session."
                 )
 
             if (row, seat) in [(s["row"], s["seat"]) for s in seats_to_book]:
                 raise ValidationError(
-                    f"Місце (ряд {row}, місце {seat}) вказане кілька разів "
-                    f"у запиті."
+                    f"Seat (row {row}, seat {seat}) is mentioned multiple times "
+                    f"in the request."
                 )
 
             seats_to_book.append(seat_data)

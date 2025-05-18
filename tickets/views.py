@@ -1,11 +1,7 @@
 from rest_framework import viewsets, permissions
 from tickets.models import Ticket
 from tickets.serializers import TicketSerializer
-
-
-class IsOwnerOrAdmin(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return request.user.is_staff or obj.reservation.user == request.user
+from tickets.permissions import IsOwnerOrAdmin
 
 
 class TicketViewSet(viewsets.ModelViewSet):

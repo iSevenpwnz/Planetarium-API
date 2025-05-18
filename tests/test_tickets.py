@@ -40,4 +40,4 @@ def test_cannot_create_ticket_for_taken_seat():
     }
     response = client.post(url, data, format="json")
     assert response.status_code == 400
-    assert "це місце вже зайняте для цієї сесії." in str(response.data).lower()
+    assert "this seat is already taken for this session" in str(response.data).lower()

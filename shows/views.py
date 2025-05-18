@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from shows.models import AstronomyShow, ShowTheme
 from shows.serializers import AstronomyShowSerializer, ShowThemeSerializer
 from django.db.models import Prefetch
+from shows.permissions import ShowThemePermissions, AstronomyShowPermissions
 
 
 class ShowThemeViewSet(viewsets.ModelViewSet):
@@ -13,11 +14,7 @@ class ShowThemeViewSet(viewsets.ModelViewSet):
     ordering = ["name"]
 
     def get_permissions(self):
-        if self.action in ["list", "retrieve"]:
-            permission_classes = [permissions.AllowAny]
-        else:
-            permission_classes = [permissions.IsAdminUser]
-        return [permission() for permission in permission_classes]
+        return ShowThemePermissions.get_permissions(self.action)
 
 
 class AstronomyShowViewSet(viewsets.ModelViewSet):
@@ -31,13 +28,7 @@ class AstronomyShowViewSet(viewsets.ModelViewSet):
     ordering = ["title"]
 
     def get_permissions(self):
-        if self.action in ["list", "retrieve"]:
-            permission_classes = [permissions.AllowAny]
-        elif self.action == "upload_image":
-            permission_classes = [permissions.IsAdminUser]
-        else:
-            permission_classes = [permissions.IsAdminUser]
-        return [permission() for permission in permission_classes]
+        return AstronomyShowPermissions.get_permissions(self.action)
 
     @action(
         detail=True,

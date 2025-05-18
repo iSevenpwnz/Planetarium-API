@@ -4,11 +4,7 @@ from rest_framework.response import Response
 from users.models import User
 from users.serializers import UserSerializer
 from rest_framework import status
-
-
-class IsSelfOrAdmin(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return request.user.is_staff or obj == request.user
+from users.permissions import IsSelfOrAdmin, UserPermissions
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -21,21 +17,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return User.objects.all()
 
     def get_permissions(self):
-        if self.action == "create":
-            permission_classes = [permissions.IsAdminUser]
-        elif self.action == "list":
-            permission_classes = [permissions.IsAdminUser]
-        elif self.action == "retrieve":
-            permission_classes = [permissions.IsAuthenticated, IsSelfOrAdmin]
-        elif self.action in ["update", "partial_update", "destroy"]:
-            permission_classes = [permissions.IsAuthenticated, IsSelfOrAdmin]
-        elif self.action == "me":
-            permission_classes = [permissions.IsAuthenticated]
-        elif self.action == "register":
-            permission_classes = [permissions.AllowAny]
-        else:
-            permission_classes = [permissions.IsAuthenticated]
-        return [permission() for permission in permission_classes]
+        return UserPermissions.get_permissions(self.action)
 
     @action(
         detail=False,

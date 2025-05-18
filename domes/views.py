@@ -5,6 +5,7 @@ from domes.models import PlanetariumDome
 from domes.serializers import PlanetariumDomeSerializer
 from show_sessions.models import ShowSession
 from show_sessions.serializers import ShowSessionSerializer
+from domes.permissions import PlanetariumDomePermissions
 
 
 class PlanetariumDomeViewSet(viewsets.ModelViewSet):
@@ -20,11 +21,7 @@ class PlanetariumDomeViewSet(viewsets.ModelViewSet):
         Instantiates and returns the list
         of permissions that this view requires.
         """
-        if self.action in ["list", "retrieve", "capacity", "sessions"]:
-            permission_classes = [permissions.AllowAny]
-        else:
-            permission_classes = [permissions.IsAdminUser]
-        return [permission() for permission in permission_classes]
+        return PlanetariumDomePermissions.get_permissions(self.action)
 
     @action(detail=True, methods=["get"], url_path="capacity")
     def capacity(self, request, pk=None):
